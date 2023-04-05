@@ -10,7 +10,7 @@ class Config:
     BATCH_SIZE = 128
     SEED = 1103
     SUBMISSION_PATH = r'data\raw\answer_sample.csv'
-
+    WINDOW_SIZE = 20
 
 cfg = Config()
 
