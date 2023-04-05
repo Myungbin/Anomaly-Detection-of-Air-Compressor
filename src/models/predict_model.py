@@ -26,13 +26,29 @@ class LSTMAutoencoder(nn.Module):
             batch_first=True
         )
 
-        self.fc = nn.Linear(hidden_dim, input_dim)
+    def forward(self, x):
+        encoded, _ = self.encoder(x)
+        decoded, _ = self.decoder(encoded)
+        return decoded
+
+
+class High_Dim_LSTM_Autoencoder(nn.Module):
+    def __init__(self, input_size, hidden_size, num_layers, latent_size):
+        super(High_Dim_LSTM_Autoencoder, self).__init__()
+        self.encoder = nn.LSTM(input_size, hidden_size,
+                               num_layers, batch_first=True)
+        self.latent = nn.Linear(hidden_size, latent_size)
+        self.decoder = nn.LSTM(latent_size, hidden_size,
+                               num_layers, batch_first=True)
+        self.output = nn.Linear(hidden_size, input_size)
 
     def forward(self, x):
-        output, (hidden, cell) = self.encoder(x)
-        encoded = self.fc(hidden[-1])
-        decoded, (_, _) = self.decoder(encoded.unsqueeze(1))
-        return decoded
+        encoded, _ = self.encoder(x)
+        encoded = self.latent(encoded[:, -1, :])
+        decoded, _ = self.decoder(
+            encoded.unsqueeze(1).repeat(1, x.shape[1], 1))
+        output = self.output(decoded)
+        return output
 
 
 class AutoEncoder(nn.Module):
