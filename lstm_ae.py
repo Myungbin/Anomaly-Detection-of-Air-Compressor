@@ -35,18 +35,18 @@ scaled_test_data = scaler.transform(test_data)
 
 n_features = _train.shape[1]
 
-train_window = []
-for i in range(cfg.WINDOW_SIZE, len(scaled_train_data)):
-    train_window.append(scaled_train_data[i - cfg.WINDOW_SIZE:i, :])
-train_window = np.array(train_window)
+# train_window = []
+# for i in range(cfg.WINDOW_SIZE, len(scaled_train_data)):
+#     train_window.append(scaled_train_data[i - cfg.WINDOW_SIZE:i, :])
+# train_window = np.array(train_window)
 
-test_window = []
-for i in range(cfg.WINDOW_SIZE, len(scaled_test_data)):
-    test_window.append(scaled_test_data[i - cfg.WINDOW_SIZE:i, :])
-test_window = np.array(test_window)
+# test_window = []
+# for i in range(cfg.WINDOW_SIZE, len(scaled_test_data)):
+#     test_window.append(scaled_test_data[i - cfg.WINDOW_SIZE:i, :])
+# test_window = np.array(test_window)
 
 
-dataloader = DatasetLoader(train_window, test_window)
+dataloader = DatasetLoader(scaled_train_data, scaled_test_data)
 train_loader, test_loader = dataloader.load
 
 
