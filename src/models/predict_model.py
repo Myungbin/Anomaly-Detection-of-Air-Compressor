@@ -10,7 +10,6 @@ class LSTMAutoencoder(nn.Module):
         self.num_layers = num_layers
         self.dropout = dropout
 
-        # 인코더 정의
         self.encoder = nn.LSTM(
             input_size=input_dim,
             hidden_size=hidden_dim,
@@ -19,7 +18,6 @@ class LSTMAutoencoder(nn.Module):
             batch_first=True
         )
 
-        # 디코더 정의
         self.decoder = nn.LSTM(
             input_size=hidden_dim,
             hidden_size=input_dim,
@@ -28,32 +26,36 @@ class LSTMAutoencoder(nn.Module):
             batch_first=True
         )
 
+        self.fc = nn.Linear(hidden_dim, input_dim)
+
     def forward(self, x):
-        # 인코더의 순전파
         output, (hidden, cell) = self.encoder(x)
-
-        # 디코더의 초기 은닉 상태 및 셀 상태 설정
-        decoded, (_, _) = self.decoder(output)
-
+        encoded = self.fc(hidden[-1])
+        decoded, (_, _) = self.decoder(encoded.unsqueeze(1))
         return decoded
 
 
 class AutoEncoder(nn.Module):
-    def __init__(self):
+    def __init__(self, input_dim, latent_dim=32):
         super(AutoEncoder, self).__init__()
+
         self.Encoder = nn.Sequential(
-            nn.Linear(7, 64),
+            nn.Linear(input_dim, 64),
             nn.BatchNorm1d(64),
             nn.LeakyReLU(),
             nn.Linear(64, 128),
             nn.BatchNorm1d(128),
             nn.LeakyReLU(),
+            nn.Linear(128, latent_dim),
         )
         self.Decoder = nn.Sequential(
+            nn.Linear(latent_dim, 128),
+            nn.BatchNorm1d(128),
+            nn.LeakyReLU(),
             nn.Linear(128, 64),
             nn.BatchNorm1d(64),
             nn.LeakyReLU(),
-            nn.Linear(64, 7),
+            nn.Linear(64, input_dim),
         )
 
     def forward(self, x):
