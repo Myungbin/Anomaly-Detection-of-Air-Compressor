@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def add_motor_hp(data):
     """
     설비 번호에 따라 모터의 마력을 계산하여 feature로 추가합니다.

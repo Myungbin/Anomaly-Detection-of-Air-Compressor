@@ -1,30 +1,13 @@
-"""
-air_inflow: 공기 흡입 유량 (^3/min)
-air_end_temp: 공기 말단 온도 (°C)
-out_pressure: 토출 압력 (Mpa)
-motor_current: 모터 전류 (A)
-motor_rpm: 모터 회전수 (rpm)
-motor_temp: 모터 온도 (°C)
-motor_vibe: 모터 진동 (mm/s)
-type: 설비 번호
-
-설비 번호 [0, 4, 5, 6, 7]: 30HP(마력)
-설비 번호 1: 20HP
-설비 번호 2: 10HP
-설비 번호 3: 50HP
-"""
 import warnings
 
 import pandas as pd
 import numpy as np
-from sklearn.metrics import f1_score, precision_score, recall_score
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 import torch.optim as optim
 
-from src.features import build_features
 from src.models import predict_model
 
 warnings.filterwarnings(action='ignore')
