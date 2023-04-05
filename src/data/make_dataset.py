@@ -1,30 +1,42 @@
-# -*- coding: utf-8 -*-
-import click
-import logging
-from pathlib import Path
-from dotenv import find_dotenv, load_dotenv
+"""
+Deep Learning
+"""
+import torch
+from torch.utils.data import Dataset, DataLoader
+
+from src.config.config import cfg
 
 
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
-def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
-    """
-    logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+class CustomDataset(Dataset):
+    def __init__(self, data):
+        self.data = torch.from_numpy(data).float()
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        return self.data[index]
 
 
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
+class DatasetLoader:
+    def __init__(self, train_data, test_data):
+        self.train_data = train_data
+        self.test_data = test_data
 
-    # not used in this stub but often useful for finding various files
-    project_dir = Path(__file__).resolve().parents[2]
+    def _dataset_init(self):
+        train_dataset = CustomDataset(self.train_data)
+        test_dataset = CustomDataset(self.test_data)
 
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
+        return train_dataset, test_dataset
 
-    main()
+    def _dataloader_init(self, train_dataset, test_dataset):
+        train_loader = DataLoader(train_dataset, shuffle=True, batch_size=cfg.BATCH_SIZE)
+        test_loader = DataLoader(test_dataset, shuffle=False, batch_size=cfg.BATCH_SIZE)
+
+        return train_loader, test_loader
+
+    @property
+    def load(self):
+        train_dataset, test_dataset = self._dataset_init()
+        train_loader, test_loader = self._dataloader_init(train_dataset, test_dataset)
+        return train_loader, test_loader
