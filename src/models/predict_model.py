@@ -58,22 +58,22 @@ class AutoEncoder(nn.Module):
         super(AutoEncoder, self).__init__()
 
         self.Encoder = nn.Sequential(
-            nn.Linear(input_dim, 64),
-            nn.BatchNorm1d(64),
+            nn.Linear(input_dim, 1000),
+            nn.BatchNorm1d(1000),
             nn.LeakyReLU(),
-            nn.Linear(64, 128),
-            nn.BatchNorm1d(128),
+            nn.Linear(1000, 2000),
+            nn.BatchNorm1d(2000),
             nn.LeakyReLU(),
-            nn.Linear(128, latent_dim),
+            nn.Linear(2000, latent_dim),
         )
         self.Decoder = nn.Sequential(
-            nn.Linear(latent_dim, 128),
-            nn.BatchNorm1d(128),
+            nn.Linear(latent_dim, 2000),
+            nn.BatchNorm1d(2000),
             nn.LeakyReLU(),
-            nn.Linear(128, 64),
-            nn.BatchNorm1d(64),
+            nn.Linear(2000, 1000),
+            nn.BatchNorm1d(1000),
             nn.LeakyReLU(),
-            nn.Linear(64, input_dim),
+            nn.Linear(1000, input_dim),
         )
 
     def forward(self, x):

@@ -14,7 +14,8 @@ class Config:
     BATCH_SIZE = 128
     SEED = 1103
     WINDOW_SIZE = 20
-
+    
+    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 cfg = Config()
 

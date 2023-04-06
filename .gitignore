@@ -134,3 +134,6 @@ dmypy.json
 
 # html
 *.html
+
+# submission csv
+/data/submission/*.*
