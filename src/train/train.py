@@ -39,7 +39,7 @@ def evaluation(test_loader, model):
             # batch_pred = np.where(np.array(cosine) < 0.95, 1, 0).tolist()
 
             mse = np.mean(np.power(data.detach().numpy() - prediction.detach().numpy(), 2), axis=1)
-            threshold = np.mean(mse) + 2.8 * np.std(mse)
+            threshold = np.mean(mse) + 3 * np.std(mse)
             batch_pred = np.where(np.array(mse) < threshold, 0, 1).tolist()
             pred += batch_pred
     return pred
