@@ -6,11 +6,15 @@ import torch
 
 
 class Config:
+    TRAIN_PATH = r'data\raw\train_data.csv'
+    TEST_PATH = r'data\raw\test_data.csv'
+    SUBMISSION_PATH = r'data\raw\answer_sample.csv'
+
     EPOCHS = 100
     BATCH_SIZE = 128
     SEED = 1103
-    SUBMISSION_PATH = r'data\raw\answer_sample.csv'
     WINDOW_SIZE = 20
+
 
 cfg = Config()
 
