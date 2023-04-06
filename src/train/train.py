@@ -1,6 +1,9 @@
+from datetime import datetime
+
 import torch
 import torch.nn as nn
 import numpy as np
+import pandas as pd
 
 from src.config.config import cfg
 
@@ -35,3 +38,11 @@ def evaluation(test_loader, model):
             # batch_pred = np.where(np.array(mse) < threshold, 0, 1).tolist()
             pred += batch_pred
     return pred
+
+
+def prediction_to_csv(prediction):
+    submission = pd.read_csv(cfg.SUBMISSION_PATH)
+    submission["label"] = prediction
+    print(submission.label.value_counts())
+    current_time = datetime.now().strftime('%Y%m%d_%H%M%S')
+    submission.to_csv(f'data/submission/{current_time}submission.csv', index=False)

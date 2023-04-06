@@ -25,10 +25,12 @@ class LSTMAutoencoder(nn.Module):
             dropout=dropout,
             batch_first=True
         )
+        self.fc = nn.Linear(hidden_dim, hidden_dim)
 
     def forward(self, x):
         encoded, _ = self.encoder(x)
-        decoded, _ = self.decoder(encoded)
+        latent = self.fc(encoded)
+        decoded, _ = self.decoder(latent)
         return decoded
 
 
