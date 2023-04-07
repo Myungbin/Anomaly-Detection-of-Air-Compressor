@@ -10,12 +10,13 @@ class Config:
     TEST_PATH = r'data\raw\test_data.csv'
     SUBMISSION_PATH = r'data\raw\answer_sample.csv'
 
-    EPOCHS = 100
-    BATCH_SIZE = 128
+    EPOCHS = 400
+    BATCH_SIZE = 512
     SEED = 1103
     WINDOW_SIZE = 20
-    
+
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
 
 cfg = Config()
 

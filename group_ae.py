@@ -21,15 +21,17 @@ seed_everything(cfg.SEED)
 
 scaler = MinMaxScaler()
 
-data = pd.read_csv(r'data\raw\train_data.csv')
-data = build_features.add_air_flow_pressure(data)
-data = build_features.add_motor_hp(data)
+train_data = pd.read_csv(r'data\raw\train_data.csv')
+pca_train = pd.read_csv(r'data\processed\PCA_train.csv')
+train_data = build_features.create_derived_features(train_data)
+train_data = pd.concat([train_data, pca_train], axis=1)
+
 test_data = pd.read_csv(r'data\raw\test_data.csv')
-test_data = build_features.add_air_flow_pressure(test_data)
-test_data = build_features.add_motor_hp(test_data)
+pca_test = pd.read_csv(r'data\processed\PCA_test.csv')
+test_data = build_features.create_derived_features(test_data)
+test_data = pd.concat([test_data, pca_test], axis=1)
 
-grouped_train = data.groupby('type')
-
+grouped_train = train_data.groupby('type')
 
 preds = []
 for group_name, group_data in grouped_train:
@@ -51,13 +53,14 @@ for group_name, group_data in grouped_train:
     prediction = evaluation(test_loader, model)
     preds.append(prediction)
     print(f"finish {group_name}type")
-    
+
 preds = np.concatenate(preds)
 prediction_to_csv(preds)
 
 import seaborn as sns
+
 test_data['label'] = preds
 test1 = test_data[test_data["label"] == 1]
-sns.pairplot(test1[['air_inflow', 'air_end_temp', 'out_pressure']])
-sns.pairplot(test1[['motor_current', 'motor_rpm', 'motor_temp', 'motor_vibe']])
+sns.pairplot(test1[['air_inflow', 'air_end_temp', 'out_pressure', 'air_flow_pressure']])
+# sns.pairplot(test1[['motor_rpm', 'motor_temp', 'motor_vibe']])
 plt.show()

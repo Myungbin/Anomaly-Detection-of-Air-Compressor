@@ -18,20 +18,20 @@ from datetime import datetime
 warnings.filterwarnings(action='ignore')
 seed_everything(cfg.SEED)
 
-scaler = StandardScaler()
+scaler = MinMaxScaler()
 
 # 데이터 전처리
 data = pd.read_csv(r'data\raw\train_data.csv')
 data = build_features.add_air_flow_pressure(data)
 data = build_features.add_motor_hp(data)
 # data = build_features.add_motor_vibe_freq(data)
-data = data.drop("type", axis=1)
+data = data.drop(["type", 'air_inflow'], axis=1)
 scaled_data = scaler.fit_transform(data)
 test_data = pd.read_csv(r'data\raw\test_data.csv')
 test_data = build_features.add_air_flow_pressure(test_data)
 test_data = build_features.add_motor_hp(test_data)
 # test_data = build_features.add_motor_vibe_freq(test_data)
-test_data = test_data.drop("type", axis=1)
+test_data = test_data.drop(["type", 'air_inflow'], axis=1)
 scaled_test_data = scaler.transform(test_data)
 n_features = data.shape[1]
 
@@ -56,10 +56,7 @@ prediction_to_csv(prediction)
 # plot
 # anomaly_plot(test_data, prediction)
 import seaborn as sns
+
 test_data['label'] = prediction
 test1 = test_data[test_data["label"] == 1]
-sns.pairplot(test1[['air_inflow', 'air_end_temp', 'out_pressure']])
-# sns.pairplot(test1[['motor_current', 'motor_rpm', 'motor_temp', 'motor_vibe']])
-
-
-plt.show()
+sns.pairplot(test1[['air_end_temp', 'out_pressure']])

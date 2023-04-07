@@ -22,25 +22,25 @@ def train(train_loader, model, criterion, optimizer):
             loss.backward()
             optimizer.step()
 
-        print(f'Epoch [{epoch + 1}/{cfg.EPOCHS}], Loss: {loss.item():.4f}')
+        print(f'Epoch [{epoch + 1}/{cfg.EPOCHS}], Loss: {loss.item():.7f}')
 
 
 def evaluation(test_loader, model):
     model.eval()
-    model.to(cfg.DEVICE)
+    model.to("cpu")
     pred = []
     with torch.no_grad():
         for data in iter(test_loader):
-            data = data.to(cfg.DEVICE)
+            data = data.to("cpu")
             prediction = model(data)
 
-            # cos = nn.CosineSimilarity(dim=1, eps=1e-6)
-            # cosine = cos(data, prediction).tolist()
-            # batch_pred = np.where(np.array(cosine) < 0.95, 1, 0).tolist()
+            cos = nn.CosineSimilarity(dim=1)
+            cosine = cos(data, prediction).tolist()
+            batch_pred = np.where(np.array(cosine) < 0.92, 1, 0).tolist()
 
-            mse = np.mean(np.power(data.detach().numpy() - prediction.detach().numpy(), 2), axis=1)
-            threshold = np.mean(mse) + 3 * np.std(mse)
-            batch_pred = np.where(np.array(mse) < threshold, 0, 1).tolist()
+            # mse = np.mean(np.power(data.detach().numpy() - prediction.detach().numpy(), 2), axis=1)
+            # threshold = np.mean(mse) + 3 * np.std(mse)
+            # batch_pred = np.where(np.array(mse) < threshold, 0, 1).tolist()
             pred += batch_pred
     return pred
 
