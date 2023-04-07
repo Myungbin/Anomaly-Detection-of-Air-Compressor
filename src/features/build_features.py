@@ -1,50 +1,101 @@
 import numpy as np
 
 
-def add_motor_hp(data):
+def create_derived_features(df):
+    """
+    모든 파생 변수를 생성하는 함수
+    """
+    df = add_air_flow_pressure(df)
+    df = create_current_by_airflow(df)
+    df = create_temp_diff(df)
+    df = create_current_by_vibration(df)
+    df = create_current_by_rpm(df)
+    df = create_temp_by_vibration(df)
+    df = create_rpm_diff_vibration(df)
+    return df
+
+
+def add_motor_hp(df):
     """
     설비 번호에 따라 모터의 마력을 계산하여 feature로 추가합니다.
 
     Args:
-        data (pandas.DataFrame): 모터 마력을 추가할 데이터프레임
+        df (pandas.DataFrame): 모터 마력을 추가할 데이터프레임
 
     Returns:
         pandas.DataFrame: 모터 마력이 추가된 데이터프레임
     """
-    data["motor_hp"] = 0
-    data.loc[data["type"].isin([0, 4, 5, 6, 7]), "motor_hp"] = 30
-    data.loc[data["type"] == 1, "motor_hp"] = 20
-    data.loc[data["type"] == 2, "motor_hp"] = 10
-    data.loc[data["type"] == 3, "motor_hp"] = 50
-    return data
+    df["motor_hp"] = 0
+    df.loc[df["type"].isin([0, 4, 5, 6, 7]), "motor_hp"] = 30
+    df.loc[df["type"] == 1, "motor_hp"] = 20
+    df.loc[df["type"] == 2, "motor_hp"] = 10
+    df.loc[df["type"] == 3, "motor_hp"] = 50
+    return df
 
 
-def add_air_flow_pressure(data):
+def add_air_flow_pressure(df):
     """
-    `air_inflow`와 `out_pressure`의 곱으로 이루어진 `air_flow_pressure` feature를 추가합니다.
-
-    Args:
-        data (pandas.DataFrame): Feature가 추가될 데이터프레임
-
-    Returns:
-        pandas.DataFrame: Feature가 추가된 데이터프레임
+    air_inflow`와 `out_pressure`의 곱으로 이루어진 `air_flow_pressure` feature를 추가합니다.
     """
-    data["air_flow_pressure"] = data["air_inflow"] * data["out_pressure"]
-    return data
+
+    df["air_flow_pressure"] = df["air_inflow"] * df["out_pressure"]
+    return df
 
 
-def add_motor_vibe_freq(data):
+def create_current_by_airflow(df):
+    """
+    공기 흡입 속도에 따른 모터 전류 파생 변수 생성
+    """
+    df['current_by_airflow'] = df["motor_current"] / df["air_inflow"]
+    return df
+
+
+def create_temp_diff(df):
+    """
+    공기 말단 온도와 모터 온도 간의 차이 파생 변수 생성
+    """
+    df['temp_diff'] = df["motor_temp"] - df["air_end_temp"]
+    return df
+
+
+def create_current_by_vibration(df):
+    """
+    모터 진동에 따른 모터 전류 파생 변수 생성
+    """
+    df['current_by_vibration'] = df["motor_current"] * df["motor_vibe"]
+    return df
+
+
+def create_current_by_rpm(df):
+    """
+    모터 회전수에 따른 모터 전류 파생 변수 생성
+    """
+    df['current_by_rpm'] = df["motor_current"] / df["motor_rpm"]
+    return df
+
+
+def create_temp_by_vibration(df):
+    df['temp_by_vibration'] = df["air_end_temp"] * df["motor_vibe"]
+    return df
+
+
+def create_rpm_diff_vibration(df):
+    df['rpm_diff_vibration'] = df["motor_rpm"] - df["motor_vibe"]
+    return df
+
+
+def add_motor_vibe_freq(df):
     """
     `motor_vibe` feature를 Fourier Transform을 이용하여 분해하여, 
     주파수 도메인에서의 `motor_vibe_freq1`와 `motor_vibe_freq2` feature를 추가합니다.
 
     Args:
-        data (pandas.DataFrame): Feature가 추가될 데이터프레임
+        df (pandas.DataFrame): Feature가 추가될 데이터프레임
 
     Returns:
         pandas.DataFrame: Feature가 추가된 데이터프레임
     """
-    freq = np.fft.fft(data["motor_vibe"])
-    data["motor_vibe_freq1"] = freq[1].real
-    data["motor_vibe_freq2"] = freq[2].real
-    return data
+    freq = np.fft.fft(df["motor_vibe"])
+    df["motor_vibe_freq1"] = freq[1].real
+    df["motor_vibe_freq2"] = freq[2].real
+    return df
