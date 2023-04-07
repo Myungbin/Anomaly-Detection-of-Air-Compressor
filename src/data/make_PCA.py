@@ -4,7 +4,6 @@ from sklearn.decomposition import PCA
 import pandas as pd
 import warnings
 
-import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, precision_score, recall_score
 from sklearn.ensemble import IsolationForest
@@ -34,8 +33,8 @@ columns_for_pca1 = ['air_inflow', 'air_end_temp',
                     'out_pressure', 'air_flow_pressure']
 columns_for_pca2 = ['motor_current', 'motor_rpm', 'motor_temp']
 
-pca1 = PCA(n_components=1)
-pca2 = PCA(n_components=1)
+pca1 = PCA(n_components=1, random_state=42)
+pca2 = PCA(n_components=1, random_state=42)
 
 pca_result1_train = pca1.fit_transform(df_train[columns_for_pca1])
 pca_result2_train = pca2.fit_transform(df_train[columns_for_pca2])
