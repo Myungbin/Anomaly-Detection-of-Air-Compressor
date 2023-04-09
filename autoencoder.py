@@ -22,16 +22,12 @@ scaler = MinMaxScaler()
 
 # 데이터 전처리
 data = pd.read_csv(r'data\raw\train_data.csv')
-data = build_features.add_air_flow_pressure(data)
-data = build_features.add_motor_hp(data)
-# data = build_features.add_motor_vibe_freq(data)
-data = data.drop(["type", 'air_inflow'], axis=1)
+data = build_features.create_derived_features(data)
+data = data.drop(["type"], axis=1)
 scaled_data = scaler.fit_transform(data)
 test_data = pd.read_csv(r'data\raw\test_data.csv')
-test_data = build_features.add_air_flow_pressure(test_data)
-test_data = build_features.add_motor_hp(test_data)
-# test_data = build_features.add_motor_vibe_freq(test_data)
-test_data = test_data.drop(["type", 'air_inflow'], axis=1)
+test_data = build_features.create_derived_features(test_data)
+test_data = test_data.drop(["type"], axis=1)
 scaled_test_data = scaler.transform(test_data)
 n_features = data.shape[1]
 
@@ -40,7 +36,7 @@ dataloader = DatasetLoader(scaled_data, scaled_test_data)
 train_loader, test_loader = dataloader.load
 
 # 학습 파라미터
-model = predict_model.AutoEncoder(input_dim=n_features, latent_dim=32)
+model = predict_model.AutoEncoder(input_dim=n_features, latent_dim=128)
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 

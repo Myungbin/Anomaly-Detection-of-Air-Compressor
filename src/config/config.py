@@ -10,8 +10,8 @@ class Config:
     TEST_PATH = r'data\raw\test_data.csv'
     SUBMISSION_PATH = r'data\raw\answer_sample.csv'
 
-    EPOCHS = 400
-    BATCH_SIZE = 512
+    EPOCHS = 500
+    BATCH_SIZE = 1024
     SEED = 1103
     WINDOW_SIZE = 20
 

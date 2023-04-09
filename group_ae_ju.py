@@ -21,15 +21,8 @@ seed_everything(cfg.SEED)
 
 scaler = MinMaxScaler()
 
-train_data = pd.read_csv(r'data\raw\train_data.csv')
-pca_train = pd.read_csv(r'data\processed\PCA_train_15_feature.csv')
-train_data = build_features.create_derived_features(train_data)
-# train_data = pd.concat([train_data, pca_train], axis=1)
-
-test_data = pd.read_csv(r'data\raw\test_data.csv')
-pca_test = pd.read_csv(r'data\processed\PCA_test_15_feature.csv')
-test_data = build_features.create_derived_features(test_data)
-# test_data = pd.concat([test_data, pca_test], axis=1)
+train_data = pd.read_csv('train_ju.csv')
+test_data = pd.read_csv('test_ju.csv')
 
 grouped_train = train_data.groupby('type')
 
@@ -54,15 +47,13 @@ for group_name, group_data in grouped_train:
 
     prediction, cosine = evaluation(test_loader, model)
     preds.append(prediction)
-    ths.append(cosine)
+    ths.append(ths)
     print(f"finish {group_name}type")
 
 threshold = np.concatenate(ths)
 preds = np.concatenate(preds)
 
-print(threshold)
-# prediction_to_csv(preds)
-
+print(preds)
 # import seaborn as sns
 
 # test_data['label'] = preds
