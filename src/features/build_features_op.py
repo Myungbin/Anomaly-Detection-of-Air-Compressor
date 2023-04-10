@@ -7,33 +7,32 @@ def create_derived_features(df):
     모든 파생 변수를 생성하는 함수
     """
     df = add_air_flow_pressure(df)
-    df = create_current_by_airflow(df)
+    # df = create_current_by_airflow(df)
     df = create_temp_diff(df)
     df = create_current_by_vibration(df)
-    df = create_current_by_rpm(df)
-    df = create_temp_by_vibration(df)
-    df = create_rpm_diff_vibration(df)
+    # df = create_current_by_rpm(df)
+    # df = create_temp_by_vibration(df)
+    # df = create_rpm_diff_vibration(df)
     # =================================
-    df = create_current_temp_diff(df)
-    df = create_vibration_rpm_product(df)
-    df = create_current_by_airflow_ratio(df)
-    df = create_vibration_endtemp_product(df)
-    df = create_rpm_airflow_product(df)
-    # =================================
-
+    # df = create_current_temp_diff(df)
+    # df = create_vibration_rpm_product(df)
+    # df = create_current_by_airflow_ratio(df)
+    # df = create_vibration_endtemp_product(df)
+    # df = create_rpm_airflow_product(df)
+    # # # =================================
+    #
     df = compression_ratio(df)
     df = airflow_per_rotation(df)
-    df = create_rpm_airflow_product(df)
     df = all_efficiency(df)
-    df = air_density(df)
-    df = volumetric_efficiency(df)
-    df = work_input(df)
-    df = temp_rise_rate(df)
-    df = motor_stability(df)
     df = power_efficiency(df)
+    # df = create_rpm_airflow_product(df)
+    # df = air_density(df)
+    # df = volumetric_efficiency(df)
+    # df = work_input(df) # x
+    # df = temp_rise_rate(df) # x
+    # df = motor_stability(df) # x
+
     return df
-
-
 
 
 def add_air_flow_pressure(df):
@@ -86,6 +85,7 @@ def work_input(df):
     df['work_input'] = df['motor_current'] * df['motor_rpm'] * df['motor_vibe']  # 입력 열
     return df
 
+
 # 나누기 연산
 
 
@@ -112,6 +112,7 @@ def create_current_by_airflow_ratio(df):
     df['current_by_airflow_ratio'] = df['motor_current'] / df['air_inflow']
     return df
 
+
 def compression_ratio(df):
     df['compression_ratio'] = df['out_pressure'] / df['air_inflow']
     return df
@@ -136,17 +137,21 @@ def volumetric_efficiency(df):
     df['volumetric_efficiency'] = df['air_inflow'] / (df['motor_rpm'] * (df['motor_vibe'] / 1000))  # 용적 효율
     return df
 
+
 def temp_rise_rate(df):
     df['temp_rise_rate'] = df['air_end_temp'] / df['motor_temp']
-    return df 
+    return df
+
 
 def motor_stability(df):
     df['motor_stability'] = df['motor_vibe'] / df['motor_temp']
     return df
 
+
 def power_efficiency(df):
     df['power_efficiency'] = df['out_pressure'] * df['air_inflow'] / df['motor_current']
     return df
+
 
 # 빼기 연산
 
@@ -170,7 +175,6 @@ def create_current_temp_diff(df):
     """
     df['current_temp_diff'] = df['motor_current'] - df['air_end_temp']
     return df
-
 
 
 '''

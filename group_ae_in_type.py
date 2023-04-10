@@ -7,6 +7,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
+from FRUFS import FRUFS
+from xgboost import XGBClassifier, XGBRegressor
 
 from src.features import build_features_op
 from src.models import predict_model
@@ -32,6 +34,17 @@ test_data['motor_vibe'] = np.log1p(test_data['motor_vibe'])
 test_data = build_features_op.create_derived_features(test_data)
 # test_data = pd.concat([test_data, pca_test], axis=1)
 
+
+model_frufs = FRUFS(model_r=XGBRegressor(random_state=27), model_c=XGBClassifier(random_state=27), k=20, n_jobs=-1,
+                    verbose=0, random_state=27)
+df_train_pruned = model_frufs.fit_transform(train_data)
+df_test_pruned = model_frufs.transform(test_data)
+
+FRUFS_XGBRegressor_var = list(df_train_pruned.columns)
+
+train_data = train_data[FRUFS_XGBRegressor_var]
+test_data = test_data[FRUFS_XGBRegressor_var]
+
 scaled_train_data = scaler.fit_transform(train_data)
 scaled_test_data = scaler.transform(test_data)
 
@@ -44,8 +57,8 @@ preds = []
 ths = []
 for group_name, group_data in grouped_train:
     test_group = scaled_test_data[scaled_test_data['type'] == group_name]
-    train_group = group_data.drop('type', axis=1).values
-    test_group = test_group.drop('type', axis=1).values
+    train_group = group_data.values
+    test_group = test_group.values
 
     n_features = train_group.shape[1]
     print(n_features)

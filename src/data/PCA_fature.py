@@ -21,6 +21,9 @@ test = pd.read_csv(r'data\raw\test_data.csv')
 df = build_features.create_derived_features(df)
 test = build_features.create_derived_features(test)
 
+df = df.drop('type', axis=1)
+test = test.drop('type', axis=1)
+
 scaler = MinMaxScaler()
 data_scaled = scaler.fit_transform(df)
 test_scaled = scaler.transform(test)
@@ -72,8 +75,8 @@ pca_train, pca_test = pca_transform(train, test, n_components)
 pca_train_df = pd.DataFrame(pca_train, columns=['pca_result1', 'pc_result2', 'pca_result3'])
 pc_test_df = pd.DataFrame(pca_test, columns=['pca_result1', 'pc_result2', 'pca_result3'])
 
-pca_train_df.to_csv("PCA_train_15_feature.csv", index=False)
-pc_test_df.to_csv("PCA_test_15_feature.csv", index=False)
+pca_train_df.to_csv("PCA_train_26_feature.csv", index=False)
+pc_test_df.to_csv("PCA_test_26_feature.csv", index=False)
 
 # df_train = train.drop(['type'], axis=1)
 # df_test = test.drop(['type'], axis=1)
