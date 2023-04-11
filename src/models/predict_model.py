@@ -38,8 +38,10 @@ class LSTMAutoencoder4(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers=1):
         super(LSTMAutoencoder4, self).__init__()
 
-        self.encoder = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
-        self.decoder = nn.LSTM(hidden_size, input_size, num_layers, batch_first=True)
+        self.encoder = nn.LSTM(input_size, hidden_size,
+                               num_layers, batch_first=True)
+        self.decoder = nn.LSTM(hidden_size, input_size,
+                               num_layers, batch_first=True)
 
     def forward(self, x):
         # Encoding
@@ -60,22 +62,57 @@ class AutoEncoder(nn.Module):
         super(AutoEncoder, self).__init__()
 
         self.Encoder = nn.Sequential(
-            nn.Linear(input_dim, 256, bias=False),
+            nn.Linear(input_dim, 256),
             nn.BatchNorm1d(256),
             nn.LeakyReLU(),
-            nn.Linear(256, 128, bias=False),
+            nn.Linear(256, 128),
             nn.BatchNorm1d(128),
             nn.LeakyReLU(),
-            nn.Linear(128, latent_dim, bias=False),
+            nn.Linear(128, latent_dim),
         )
         self.Decoder = nn.Sequential(
-            nn.Linear(latent_dim, 128, bias=False),
+            nn.Linear(latent_dim, 128),
             nn.BatchNorm1d(128),
             nn.LeakyReLU(),
-            nn.Linear(128, 256, bias=False),
+            nn.Linear(128, 256),
             nn.BatchNorm1d(256),
             nn.LeakyReLU(),
-            nn.Linear(256, input_dim, bias=False)
+            nn.Linear(256, input_dim)
+        )
+
+    def forward(self, x):
+        x = self.Encoder(x)
+        x = self.Decoder(x)
+        return x
+
+
+class DeepAutoEncoder(nn.Module):
+    def __init__(self, input_dim, latent_dim=32):
+        super(DeepAutoEncoder, self).__init__()
+
+        self.Encoder = nn.Sequential(
+            nn.Linear(input_dim, 512),
+            nn.BatchNorm1d(512),
+            nn.LeakyReLU(),
+            nn.Linear(512, 256),
+            nn.BatchNorm1d(256),
+            nn.LeakyReLU(),
+            nn.Linear(256, 128),
+            nn.BatchNorm1d(128),
+            nn.LeakyReLU(),
+            nn.Linear(128, latent_dim),
+        )
+        self.Decoder = nn.Sequential(
+            nn.Linear(latent_dim, 128),
+            nn.BatchNorm1d(128),
+            nn.LeakyReLU(),
+            nn.Linear(128, 256),
+            nn.BatchNorm1d(256),
+            nn.LeakyReLU(),
+            nn.Linear(256, 512),
+            nn.BatchNorm1d(512),
+            nn.LeakyReLU(),
+            nn.Linear(512, input_dim)
         )
 
     def forward(self, x):
@@ -147,6 +184,3 @@ class RecurrentAutoencoder(nn.Module):
         x = self.encoder(x)
         x = self.decoder(x)
         return x
-
-
-
