@@ -37,7 +37,7 @@ def evaluation(test_loader, model):
 
             cos = nn.CosineSimilarity(dim=1)
             cosine = cos(data, prediction).tolist()
-            batch_pred = np.where(np.array(cosine) < 0.999562, 1, 0).tolist()
+            batch_pred = np.where(np.array(cosine) < 0.999692, 1, 0).tolist()
 
             # mse = np.mean(np.power(data.detach().numpy() - prediction.detach().numpy(), 2), axis=1)
             # threshold = np.mean(mse) + 3 * np.std(mse)
