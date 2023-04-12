@@ -12,6 +12,7 @@ def outlier_z_score_filter_df(df, threshold=3.5):
     filtered_df = df.apply(lambda x: x[np.abs((x - x.mean()) / x.std()) < threshold])
 
     # NA 값을 가진 행 제거
+    print("Drop Data \n", filtered_df.isna().sum())
     filtered_df = filtered_df.dropna()
 
     # 결과 반환
