@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def outlier_z_score_filter_df(df, threshold=3.5):
+def outlier_z_score_filter_df(df, threshold=3):
     """
     데이터프레임의 모든 feature에 대해 Z-score 방법을 이용하여 이상치를 제거하고, NA 값을 가진 행을 제거하는 함수
     :param df: 이상치를 제거할 데이터프레임
@@ -13,7 +13,9 @@ def outlier_z_score_filter_df(df, threshold=3.5):
 
     # NA 값을 가진 행 제거
     print("Drop Data \n", filtered_df.isna().sum())
-    filtered_df = filtered_df.dropna()
+    filtered_df = filtered_df.fillna(method='ffill')
+    # filtered_df = filtered_df.dropna()
 
     # 결과 반환
     return filtered_df
+

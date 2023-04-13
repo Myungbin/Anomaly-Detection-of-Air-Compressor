@@ -1,15 +1,12 @@
 import warnings
 
 import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-import torch
-import torch.nn as nn
+from sklearn.preprocessing import MinMaxScaler
 import torch.optim as optim
 
-from src.features import build_features_op, utils, build_features_optim, build_features, build_features_optimizer
+from src.features import build_features_optim
 from src.models import predict_model
-from src.train.train import train, evaluation, prediction_to_csv
+from garbage.vae_train import train, evaluation, prediction_to_csv
 from src.data.make_dataset import DatasetLoader
 from src.config.config import seed_everything, cfg
 
@@ -19,16 +16,16 @@ seed_everything(cfg.SEED)
 scaler = MinMaxScaler()
 
 # 데이터 전처리
-train_data = pd.read_csv(r'data\raw\train_data.csv')
-# add_train = pd.read_csv(r'data/processed/robust.csv')
+train_data = pd.read_csv(r'../data/raw/train_data.csv')
+add_train = pd.read_csv('../normal.csv')
 # train_data = pd.concat([train_data, add_train], axis=0)
 # train_data = utils.outlier_z_score_filter_df(train_data)
-train_data = build_features_optimizer.create_derived_features(train_data)
+train_data = build_features_optim.create_derived_features(train_data)
 train_data = train_data.drop('type', axis=1)
 
-test_data = pd.read_csv(r'data\raw\test_data.csv')
+test_data = pd.read_csv(r'../data/raw/test_data.csv')
 test_data_raw = test_data.copy()
-test_data = build_features_optimizer.create_derived_features(test_data)
+test_data = build_features_optim.create_derived_features(test_data)
 test_data = test_data.drop('type', axis=1)
 
 scaled_train_data = scaler.fit_transform(train_data)
@@ -48,12 +45,11 @@ dataloader = DatasetLoader(scaled_train_data, scaled_test_data)
 train_loader, test_loader = dataloader.load
 
 # 학습 파라미터
-model = predict_model.DeepAutoEncoder(input_dim=n_features, latent_dim=128)
-criterion = nn.MSELoss()
+model = predict_model.VariationalAutoencoder(input_dim=n_features, hidden_dim=64, latent_dim=32)
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
 # 학습
-train(train_loader, model, criterion, optimizer)
+train(train_loader, model, optimizer)
 
 # 예측
 train_prediction, train_cosine = evaluation(train_loader, model)
@@ -92,4 +88,5 @@ predict_type = [predictions00, predictions01, predictions02, predictions03, pred
 for type in predict_type:
     plt.plot(type['label'])
     plt.show()
+
 """

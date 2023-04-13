@@ -6,8 +6,10 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from sklearn.svm import OneClassSVM
+from sklearn.ensemble import IsolationForest
 
-from src.features import build_features_op, utils, build_features_optim, build_features, build_features_optimizer
+from src.features import build_features_op, utils, build_features_optim, build_features
 from src.models import predict_model
 from src.train.train import train, evaluation, prediction_to_csv
 from src.data.make_dataset import DatasetLoader
@@ -23,12 +25,12 @@ train_data = pd.read_csv(r'data\raw\train_data.csv')
 # add_train = pd.read_csv(r'data/processed/robust.csv')
 # train_data = pd.concat([train_data, add_train], axis=0)
 # train_data = utils.outlier_z_score_filter_df(train_data)
-train_data = build_features_optimizer.create_derived_features(train_data)
+train_data = build_features_optim.create_derived_features(train_data)
 train_data = train_data.drop('type', axis=1)
 
 test_data = pd.read_csv(r'data\raw\test_data.csv')
 test_data_raw = test_data.copy()
-test_data = build_features_optimizer.create_derived_features(test_data)
+test_data = build_features_optim.create_derived_features(test_data)
 test_data = test_data.drop('type', axis=1)
 
 scaled_train_data = scaler.fit_transform(train_data)
@@ -48,7 +50,7 @@ dataloader = DatasetLoader(scaled_train_data, scaled_test_data)
 train_loader, test_loader = dataloader.load
 
 # 학습 파라미터
-model = predict_model.DeepAutoEncoder(input_dim=n_features, latent_dim=128)
+model = predict_model.AutoEncoder(input_dim=n_features)
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
@@ -60,36 +62,16 @@ train_prediction, train_cosine = evaluation(train_loader, model)
 print(min(train_cosine))
 prediction, test_cosine = evaluation(test_loader, model, min(train_cosine))
 
+
+isolation_forest = IsolationForest(contamination=0.01)
+isolation_forest.fit(scaled_train_data)
+
+one_class_svm = OneClassSVM(nu=0.01, kernel="rbf", gamma=0.1)
+one_class_svm.fit(scaled_train_data)
+
+
+isolation_forest_scores = isolation_forest.score_samples(scaled_test_data)
+one_class_svm_scores = one_class_svm.score_samples(scaled_test_data)
+
 # 제출
-prediction_to_csv(prediction)
-
-# plot
-# anomaly_plot(test_data, prediction)
-
-"""
-predictions = pd.read_csv(
-    r"C:\MB_Project\project\Competition\Anomaly-Detection-of-Air-Compressor\data\submission\0230413_123151submission.csv")
-predictions00 = predictions[:1296]
-predictions01 = predictions[1296:2403]
-predictions02 = predictions[2403:3501]
-predictions03 = predictions[3501:4419]
-predictions04 = predictions[4419:5337]
-predictions05 = predictions[5337:6083]
-predictions06 = predictions[6083:6831]
-predictions07 = predictions[6831:]
-
-print(len(predictions00[predictions00['label'] == 1]))
-print(len(predictions01[predictions01['label'] == 1]))
-print(len(predictions02[predictions02['label'] == 1]))
-print(len(predictions03[predictions03['label'] == 1]))
-print(len(predictions04[predictions04['label'] == 1]))
-print(len(predictions05[predictions05['label'] == 1]))
-print(len(predictions06[predictions06['label'] == 1]))
-print(len(predictions07[predictions07['label'] == 1]))
-predict_type = [predictions00, predictions01, predictions02, predictions03, predictions04, predictions05, predictions06,
-                predictions07]
-
-for type in predict_type:
-    plt.plot(type['label'])
-    plt.show()
-"""
+# prediction_to_csv(prediction)
