@@ -3,7 +3,7 @@ import torch.nn as nn
 
 
 class AutoEncoder(nn.Module):
-    def __init__(self, input_dim):
+    def __init__(self, input_dim, latent_dim=20):
         super(AutoEncoder, self).__init__()
 
         self.Encoder = nn.Sequential(
@@ -13,10 +13,10 @@ class AutoEncoder(nn.Module):
             nn.ReLU(),
             nn.Linear(64, 32),
             nn.ReLU(),
-            nn.Linear(32, input_dim),
+            nn.Linear(32, latent_dim),
         )
         self.Decoder = nn.Sequential(
-            nn.Linear(input_dim, 32),
+            nn.Linear(latent_dim, 32),
             nn.ReLU(),
             nn.Linear(32, 64),
             nn.ReLU(),
@@ -118,3 +118,23 @@ class VariationalAutoencoder(nn.Module):
         z = self.reparameterize(mu, logvar)
         x_recon = self.decoder(z)
         return x_recon, mu, logvar
+
+
+class EncoderLSTMDecoderCNN(nn.Module):
+    def __init__(self, input_channels, output_size, hidden_size, kernel_size):
+        super(EncoderLSTMDecoderCNN, self).__init__()
+        self.hidden_size = hidden_size
+        self.encoder = nn.LSTM(input_channels, hidden_size)
+        self.decoder = nn.Sequential(
+            nn.Conv1d(hidden_size, hidden_size, kernel_size),
+            nn.BatchNorm1d(hidden_size),
+            nn.ReLU(),
+            nn.Conv1d(hidden_size, output_size, kernel_size),
+        )
+    
+    def forward(self, input):
+        encoder_output, (hidden, cell) = self.encoder(input)
+        hidden = hidden.permute(1, 0, 2)
+        decoder_output = self.decoder(hidden)
+        decoder_output = decoder_output.permute(0, 2, 1)
+        return decoder_output
