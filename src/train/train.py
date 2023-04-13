@@ -25,7 +25,7 @@ def train(train_loader, model, criterion, optimizer):
         print(f'Epoch [{epoch + 1}/{cfg.EPOCHS}], Loss: {loss.item():.7f}')
 
 
-def evaluation(test_loader, model):
+def evaluation(test_loader, model, ths=0.99):
     model.eval()
     model.to("cpu")
     pred = []
@@ -37,7 +37,7 @@ def evaluation(test_loader, model):
 
             cos = nn.CosineSimilarity(dim=1)
             cosine = cos(data, prediction).tolist()
-            batch_pred = np.where(np.array(cosine) < 0.999565327167511, 1, 0).tolist()
+            batch_pred = np.where(np.array(cosine) < ths, 1, 0).tolist()
 
             # mse = np.mean(np.power(data.detach().numpy() - prediction.detach().numpy(), 2), axis=1)
             # threshold = np.mean(mse) + 3 * np.std(mse)

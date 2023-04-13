@@ -1,5 +1,6 @@
 import math
 import numpy as np
+from build_features import *
 
 
 def create_derived_features(df):
@@ -23,13 +24,6 @@ def create_derived_features(df):
     #
     # # 모터 전류 대 모터 온도 비율
     # df['current_temp_ratio'] = df['motor_current'] / df['motor_temp']
-    #
-    # # 모터 진동 평균값
-    # df['motor_vibe_mean'] = df.groupby('type')['motor_vibe'].rolling(window=10, min_periods=1).mean().reset_index(
-    #     drop=True)
-    #
-    # # 모터 온도 증가량
-    # df['motor_temp_increase'] = df.groupby('type')['motor_temp'].diff().fillna(0)
     return df
 
 
@@ -42,5 +36,3 @@ def get_motor_load(x):
         return x['motor_current'] / 10
     else:
         return x['motor_current'] / 50
-
-

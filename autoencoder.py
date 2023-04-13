@@ -48,7 +48,7 @@ dataloader = DatasetLoader(scaled_train_data, scaled_test_data)
 train_loader, test_loader = dataloader.load
 
 # 학습 파라미터
-model = predict_model.DeepAutoEncoder(input_dim=n_features, latent_dim=128)
+model = predict_model.AutoEncoder(input_dim=n_features)
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
