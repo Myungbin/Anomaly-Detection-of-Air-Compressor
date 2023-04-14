@@ -1,4 +1,3 @@
-from sklearn.preprocessing import StandardScaler
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
@@ -7,22 +6,18 @@ import warnings
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, precision_score, recall_score
-from sklearn.ensemble import IsolationForest
-from sklearn.covariance import EllipticEnvelope
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
-from src.features import build_features
+from src.features import build_features_final
 
 warnings.filterwarnings(action='ignore')
 
 df = pd.read_csv(r'data\raw\train_data.csv')
 test = pd.read_csv(r'data\raw\test_data.csv')
 
-df = build_features.create_derived_features(df)
-test = build_features.create_derived_features(test)
+df = build_features_final.create_derived_features(df)
+test = build_features_final.create_derived_features(test)
 
-df = df.drop('type', axis=1)
-test = test.drop('type', axis=1)
 
 scaler = MinMaxScaler()
 data_scaled = scaler.fit_transform(df)
@@ -30,7 +25,12 @@ test_scaled = scaler.transform(test)
 
 train = pd.DataFrame(data_scaled, columns=df.columns)
 test = pd.DataFrame(test_scaled, columns=df.columns)
+drop_feature = ['type', 'motor_hp', 'air_end_temp', 'motor_rpm', 'motor_temp', 'motor_vibe', 'motor_current',
+                'air_inflow', "air_flow_pressure", "current_by_vibration" , "airflow_per_rotation", "air_to_motor_ratio"] 
 
+
+train = train.drop(drop_feature, axis=1)
+test = test.drop(drop_feature, axis=1)
 
 def pca_transform(train, test, n_components=None):
     """
@@ -70,13 +70,14 @@ def select_n_components(data, max_components=None, explained_variance_ratio_thre
 
 n_components = select_n_components(train)
 print(n_components)
+
 pca_train, pca_test = pca_transform(train, test, n_components)
 
-pca_train_df = pd.DataFrame(pca_train, columns=['pca_result1', 'pc_result2', 'pca_result3'])
-pc_test_df = pd.DataFrame(pca_test, columns=['pca_result1', 'pc_result2', 'pca_result3'])
+pca_train_df = pd.DataFrame(pca_train, columns=['pca_result1', 'pca_result2', 'pca_result3'])
+pc_test_df = pd.DataFrame(pca_test, columns=['pca_result1', 'pca_result2', 'pca_result3'])
 
-pca_train_df.to_csv("PCA_train_26_feature.csv", index=False)
-pc_test_df.to_csv("PCA_test_26_feature.csv", index=False)
+pca_train_df.to_csv("PCA_train_final_feature.csv", index=False)
+pc_test_df.to_csv("PCA_test_final_feature.csv", index=False)
 
 # df_train = train.drop(['type'], axis=1)
 # df_test = test.drop(['type'], axis=1)

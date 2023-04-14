@@ -6,6 +6,7 @@ def create_derived_features(df):
     """
     모든 파생 변수를 생성하는 함수
     """
+    df = add_motor_hp(df)
     df = add_air_flow_pressure(df)
     df = create_current_by_airflow(df)
     df = create_temp_diff(df)
@@ -28,6 +29,13 @@ def create_derived_features(df):
     df = air_density(df)
     df = volumetric_efficiency(df)
     df = work_input(df)
+    
+    df['air_inflow_hp'] = df['motor_hp'] / df['air_inflow']
+    df['motor_current_hp'] = df['motor_hp'] / df['motor_current']
+    df['motor_rpm_hp'] = df['motor_hp'] / df['motor_rpm']
+    df['motor_temp_hp'] = df['motor_hp'] / df['motor_temp']
+    df['motor_vibe_hp'] = df['motor_hp'] / df['motor_vibe']
+
     return df
 
 

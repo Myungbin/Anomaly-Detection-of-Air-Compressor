@@ -6,6 +6,7 @@ def create_derived_features(df):
     """
     모든 파생 변수를 생성하는 함수
     """
+    df = add_motor_hp(df)
     df = add_air_flow_pressure(df)
     # df = create_current_by_airflow(df)
     df = create_temp_diff(df)
@@ -32,6 +33,24 @@ def create_derived_features(df):
     # df = temp_rise_rate(df) # x
     # df = motor_stability(df) # x
 
+    return df
+
+
+def add_motor_hp(df):
+    """
+    설비 번호에 따라 모터의 마력을 계산하여 feature로 추가합니다.
+
+    Args:
+        df (pandas.DataFrame): 모터 마력을 추가할 데이터프레임
+
+    Returns:
+        pandas.DataFrame: 모터 마력이 추가된 데이터프레임
+    """
+    df["motor_hp"] = 0
+    df.loc[df["type"].isin([0, 4, 5, 6, 7]), "motor_hp"] = 30
+    df.loc[df["type"] == 1, "motor_hp"] = 20
+    df.loc[df["type"] == 2, "motor_hp"] = 10
+    df.loc[df["type"] == 3, "motor_hp"] = 50
     return df
 
 
@@ -82,7 +101,8 @@ def create_rpm_airflow_product(df):
 
 
 def work_input(df):
-    df['work_input'] = df['motor_current'] * df['motor_rpm'] * df['motor_vibe']  # 입력 열
+    df['work_input'] = df['motor_current'] * \
+        df['motor_rpm'] * df['motor_vibe']  # 입력 열
     return df
 
 
@@ -124,17 +144,20 @@ def airflow_per_rotation(df):
 
 
 def all_efficiency(df):
-    df['efficiency'] = df['air_flow_pressure'] / df['current_by_vibration']  # 전체 효율
+    df['efficiency'] = df['air_flow_pressure'] / \
+        df['current_by_vibration']  # 전체 효율
     return df
 
 
 def air_density(df):
-    df['air_density'] = df['out_pressure'] / (0.287 * (df['air_end_temp'] + 273.15))  # 공기 밀도
+    df['air_density'] = df['out_pressure'] / \
+        (0.287 * (df['air_end_temp'] + 273.15))  # 공기 밀도
     return df
 
 
 def volumetric_efficiency(df):
-    df['volumetric_efficiency'] = df['air_inflow'] / (df['motor_rpm'] * (df['motor_vibe'] / 1000))  # 용적 효율
+    df['volumetric_efficiency'] = df['air_inflow'] / \
+        (df['motor_rpm'] * (df['motor_vibe'] / 1000))  # 용적 효율
     return df
 
 
@@ -149,7 +172,8 @@ def motor_stability(df):
 
 
 def power_efficiency(df):
-    df['power_efficiency'] = df['out_pressure'] * df['air_inflow'] / df['motor_current']
+    df['power_efficiency'] = df['out_pressure'] * \
+        df['air_inflow'] / df['motor_current']
     return df
 
 

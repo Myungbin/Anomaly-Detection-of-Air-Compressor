@@ -8,7 +8,7 @@ import pandas as pd
 from src.config.config import cfg
 
 
-def train(train_loader, model, criterion, optimizer):
+def train(train_loader, model, criterion, optimizer, scheduler=None):
     model.train()
     model.to(cfg.DEVICE)
     for epoch in range(cfg.EPOCHS):
@@ -21,8 +21,11 @@ def train(train_loader, model, criterion, optimizer):
 
             loss.backward()
             optimizer.step()
-
-        print(f'Epoch [{epoch + 1}/{cfg.EPOCHS}], Loss: {loss.item():.7f}')
+            
+        if scheduler is not None:
+            scheduler.step()
+        if epoch % 100 == 0:
+            print(f'Epoch [{epoch}/{cfg.EPOCHS}], Loss: {loss.item():.7f}')
 
 
 def evaluation(test_loader, model, ths=0.99):
@@ -37,11 +40,11 @@ def evaluation(test_loader, model, ths=0.99):
 
             cos = nn.CosineSimilarity(dim=1)
             cosine = cos(data, prediction).tolist()
-            batch_pred = np.where(np.array(cosine) <= 0.9992206692695618, 1, 0).tolist()
+            batch_pred = np.where(np.array(cosine) <= ths, 1, 0).tolist()
 
             # mse = np.mean(np.power(data.detach().numpy() - prediction.detach().numpy(), 2), axis=1)
-            # threshold = np.mean(mse) + 3 * np.std(mse)
             # batch_pred = np.where(np.array(mse) <= 0.0013142208, 0, 1).tolist()
+            # mse = mse.tolist()
             
             # mae = np.mean(np.abs(data.detach().numpy() - prediction.detach().numpy()), axis=1)
             # batch_pred = np.where(np.array(mae) <= ths, 0, 1).tolist()
