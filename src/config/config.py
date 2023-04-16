@@ -10,8 +10,8 @@ class Config:
     TEST_PATH = r'data\raw\test_data.csv'
     SUBMISSION_PATH = r'data\raw\answer_sample.csv'
 
-    EPOCHS = 1000
-    BATCH_SIZE = 1024
+    EPOCHS = 500
+    BATCH_SIZE = 512
     SEED = 1103
     GAMMA = 0.7
     LEARNING_RATE = 1e-3

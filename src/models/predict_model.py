@@ -30,9 +30,9 @@ class AutoEncoder(nn.Module):
                 
     def forward(self, x):
         encoded = self.Encoder(x)
-        skip = self.skip(x) 
-        add =  encoded + skip
-        decoded = self.Decoder(add) 
+        # skip = self.skip(x) 
+        # add =  encoded + skip
+        decoded = self.Decoder(encoded) 
         return decoded
 
 
@@ -152,20 +152,20 @@ class Conv1DAutoencoder(nn.Module):
         super(Conv1DAutoencoder, self).__init__()
         # encoder
         self.encoder = nn.Sequential(
-            nn.Conv1d(in_channels=1, out_channels=128, kernel_size=5, padding=1),
+            nn.Conv1d(in_channels=1, out_channels=128, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Conv1d(in_channels=128, out_channels=64, kernel_size=5, padding=1),
+            nn.Conv1d(in_channels=128, out_channels=64, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Conv1d(in_channels=64, out_channels=32, kernel_size=5, padding=1),
+            nn.Conv1d(in_channels=64, out_channels=32, kernel_size=3, padding=1),
             nn.ReLU()
         )
         # decoder
         self.decoder = nn.Sequential(
-            nn.ConvTranspose1d(in_channels=32, out_channels=64, kernel_size=5, padding=1),
+            nn.ConvTranspose1d(in_channels=32, out_channels=64, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.ConvTranspose1d(in_channels=64, out_channels=128, kernel_size=5, padding=1),
+            nn.ConvTranspose1d(in_channels=64, out_channels=128, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.ConvTranspose1d(in_channels=128, out_channels=1, kernel_size=5, padding=1),
+            nn.ConvTranspose1d(in_channels=128, out_channels=1, kernel_size=3, padding=1),
             nn.Flatten(start_dim=1),
             nn.Tanh()
         )
