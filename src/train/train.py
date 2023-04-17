@@ -43,7 +43,7 @@ def evaluation(test_loader, model, ths=0.99):
             batch_pred = np.where(np.array(cosine) <= ths, 1, 0).tolist()
 
             # mse = np.mean(np.power(data.detach().numpy() - prediction.detach().numpy(), 2), axis=1)
-            # batch_pred = np.where(np.array(mse) <= 0.0013142208, 0, 1).tolist()
+            # batch_pred = np.where(np.array(mse) <= ths, 0, 1).tolist()
             # mse = mse.tolist()
             
             # mae = np.mean(np.abs(data.detach().numpy() - prediction.detach().numpy()), axis=1)

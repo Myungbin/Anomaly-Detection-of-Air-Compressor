@@ -19,17 +19,19 @@ seed_everything(cfg.SEED)
 scaler = MinMaxScaler()
 
 # 데이터 전처리
-train_data = pd.read_csv(r'data\raw\train_data.csv')
+# train_data = pd.read_csv(r'data\raw\train_data.csv')
+train_data = pd.read_csv(r'data\processed\PCA_train_final_feature.csv')
 # add_train = pd.read_csv(r'data/processed/robust.csv')
 # train_data = pd.concat([train_data, add_train], axis=0)
 # train_data = utils.outlier_z_score_filter_df(train_data)
-train_data = build_features_optimizer.create_derived_features(train_data)
-train_data = train_data.drop('type', axis=1)
+# train_data = build_features_optimizer.create_derived_features(train_data)
+# train_data = train_data.drop('type', axis=1)
 
-test_data = pd.read_csv(r'data\raw\test_data.csv')
+# test_data = pd.read_csv(r'data\raw\test_data.csv')
+test_data = pd.read_csv(r'data\processed\PCA_test_final_feature.csv')
 test_data_raw = test_data.copy()
-test_data = build_features_optimizer.create_derived_features(test_data)
-test_data = test_data.drop('type', axis=1)
+# test_data = build_features_optimizer.create_derived_features(test_data)
+# test_data = test_data.drop('type', axis=1)
 
 scaled_train_data = scaler.fit_transform(train_data)
 scaled_test_data = scaler.transform(test_data)
@@ -48,7 +50,8 @@ dataloader = DatasetLoader(scaled_train_data, scaled_test_data)
 train_loader, test_loader = dataloader.load
 
 # 학습 파라미터
-model = predict_model.AutoEncoder(input_dim=n_features)
+# model = predict_model.AutoEncoder(input_dim=n_features)
+model = predict_model.ResidualConv1DLSTMAutoencoder()
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
