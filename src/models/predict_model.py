@@ -423,7 +423,6 @@ class ResidualConv1DLSTMAutoencoder(nn.Module):
             nn.ReLU()
         )
 
-        # LSTM-based bottleneck
         self.lstm = nn.LSTM(input_size=32, hidden_size=32, num_layers=3, batch_first=True, dropout=0.5)
 
         # Decoder
@@ -440,11 +439,11 @@ class ResidualConv1DLSTMAutoencoder(nn.Module):
     def forward(self, x):
         x = torch.unsqueeze(x, 1)  # add channel dimension
         x = self.encoder(x)
-        x = x.permute(0, 2, 1)  # Permute to apply LSTM (B, C, L) -> (B, L, C)
+        x = x.permute(0, 2, 1)  # (B, C, L) -> (B, L, C)
 
         # Apply LSTM in the bottleneck
         x, _ = self.lstm(x)
-        x = x.permute(0, 2, 1)  # Permute back (B, L, C) -> (B, C, L)
+        x = x.permute(0, 2, 1)  # (B, L, C) -> (B, C, L)
 
         x = self.decoder(x)
         x = x.squeeze(1)  # remove channel dimension

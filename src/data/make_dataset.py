@@ -30,7 +30,7 @@ class DatasetLoader:
         return train_dataset, test_dataset
 
     def _dataloader_init(self, train_dataset, test_dataset):
-        train_loader = DataLoader(train_dataset, shuffle=True, batch_size=cfg.BATCH_SIZE)
+        train_loader = DataLoader(train_dataset, shuffle=False, batch_size=cfg.BATCH_SIZE)
         test_loader = DataLoader(test_dataset, shuffle=False, batch_size=cfg.BATCH_SIZE)
 
         return train_loader, test_loader
