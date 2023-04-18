@@ -20,11 +20,18 @@ def create_derived_features(df):
     df['air_to_motor_ratio'] = df['air_inflow'] / df['motor_rpm']  # 공기 유량과 모터 회전수의 비율
     df['air_to_power_ratio'] = df['air_inflow'] / (df['motor_current'] * df['motor_vibe']) # 공기 유량 대비 모터 전력
     df['mechanical_efficiency'] = (df['air_flow_pressure'] * df['motor_rpm']) / (df['motor_current'] * df['motor_vibe']) # 기계 효율
-    df['air_density'] = df['air_inflow'] / (df['motor_rpm'] * (df['motor_vibe'] / 1000))  # 공기 밀도
-    df['air_mass_flow'] = df['air_inflow'] * df['air_density']  # 공기 질량유량 
-    df['air_inflow_efficiency1'] = df['air_inflow'] / (df['motor_rpm'] * (df['motor_temp'] / 1000))  # 용적 효율
-    df['air_inflow_efficiency2'] = df['air_inflow'] / (df['motor_temp'] * (df['motor_vibe'] / 1000))  # 용적 효율
-    df['motor_current_efficiency'] = df['motor_current'] / (df['motor_rpm'] * (df['motor_vibe'] / 1000))  # 용적 효율
+    df['out_pressure_squared'] = df['out_pressure'] ** 2
+    
+    # df['air_density'] = df['air_inflow'] / (df['motor_rpm'] * (df['motor_vibe'] / 1000))  # 공기 밀도
+    # df['air_mass_flow'] = df['air_inflow'] * df['air_density']  # 공기 질량유량 
+    
+    # df['air_inflow_efficiency1'] = df['air_inflow'] / (df['motor_rpm'] * (df['motor_temp'] / 1000))  # 용적 효율
+    # df['air_inflow_efficiency2'] = df['air_inflow'] / (df['motor_temp'] * (df['motor_vibe'] / 1000))  # 용적 효율
+    # df['motor_current_efficiency'] = df['motor_current'] / (df['motor_rpm'] * (df['motor_vibe'] / 1000))  # 용적 효율
+    
+    # df["power_consumption"] = df["motor_current"] * df["motor_vibe"]
+    # df["power_output"] = df["motor_current"] * df["motor_rpm"]
+    
     return df
 
 def add_motor_hp(df):

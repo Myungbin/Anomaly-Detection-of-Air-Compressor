@@ -38,19 +38,19 @@ def evaluation(test_loader, model, ths=0.99):
             data = data.to("cpu")
             prediction = model(data)
 
-            cos = nn.CosineSimilarity(dim=1)
-            cosine = cos(data, prediction).tolist()
-            batch_pred = np.where(np.array(cosine) <= ths, 1, 0).tolist()
+            # cos = nn.CosineSimilarity(dim=1)
+            # cosine = cos(data, prediction).tolist()
+            # batch_pred = np.where(np.array(cosine) <= ths, 1, 0).tolist()
 
-            # mse = np.mean(np.power(data.detach().numpy() - prediction.detach().numpy(), 2), axis=1)
-            # batch_pred = np.where(np.array(mse) <= ths, 0, 1).tolist()
-            # mse = mse.tolist()
+            mse = np.mean(np.power(data.detach().numpy() - prediction.detach().numpy(), 2), axis=1)
+            batch_pred = np.where(np.array(mse) <= ths, 0, 1).tolist()
+            mse = mse.tolist()
             
             # mae = np.mean(np.abs(data.detach().numpy() - prediction.detach().numpy()), axis=1)
             # batch_pred = np.where(np.array(mae) <= ths, 0, 1).tolist()
             # mae = mae.tolist()
             
-            threshold += cosine
+            threshold += mse
             pred += batch_pred
     return pred, threshold
 
