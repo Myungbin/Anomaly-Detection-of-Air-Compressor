@@ -26,7 +26,8 @@ test_scaled = scaler.transform(test)
 train = pd.DataFrame(data_scaled, columns=df.columns)
 test = pd.DataFrame(test_scaled, columns=df.columns)
 drop_feature = ['type', 'motor_hp', 'air_end_temp', 'motor_rpm', 'motor_temp', 'motor_vibe', 'motor_current',
-                'air_inflow', "air_flow_pressure", "current_by_vibration" , "airflow_per_rotation", "air_to_motor_ratio"] 
+                'air_inflow', "air_flow_pressure", "current_by_vibration", "airflow_per_rotation", 'volumetric_efficiency',
+                'air_to_motor_ratio']
 
 
 train = train.drop(drop_feature, axis=1)
@@ -71,13 +72,13 @@ def select_n_components(data, max_components=None, explained_variance_ratio_thre
 n_components = select_n_components(train)
 print(n_components)
 
-pca_train, pca_test = pca_transform(train, test, n_components)
+# pca_train, pca_test = pca_transform(train, test, n_components)
 
-pca_train_df = pd.DataFrame(pca_train, columns=['pca_result1', 'pca_result2', 'pca_result3'])
-pc_test_df = pd.DataFrame(pca_test, columns=['pca_result1', 'pca_result2', 'pca_result3'])
+# pca_train_df = pd.DataFrame(pca_train, columns=['pca_result1', 'pca_result2', 'pca_result3'])
+# pc_test_df = pd.DataFrame(pca_test, columns=['pca_result1', 'pca_result2', 'pca_result3'])
 
-pca_train_df.to_csv("PCA_train_final_feature.csv", index=False)
-pc_test_df.to_csv("PCA_test_final_feature.csv", index=False)
+# pca_train_df.to_csv("PCA_train_final_feature.csv", index=False)
+# pc_test_df.to_csv("PCA_test_final_feature.csv", index=False)
 
 # df_train = train.drop(['type'], axis=1)
 # df_test = test.drop(['type'], axis=1)

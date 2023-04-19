@@ -23,7 +23,6 @@ class AutoEncoder(nn.Module):
             nn.Linear(64, 128),
             nn.LeakyReLU(),
             nn.Linear(128, input_dim),
-            nn.Tanh()
         )
 
         self.skip = nn.Linear(input_dim, latent_dim)
@@ -65,7 +64,6 @@ class DeepAutoEncoder(nn.Module):
             nn.BatchNorm1d(512),
             nn.LeakyReLU(),
             nn.Linear(512, input_dim),
-            nn.Sigmoid()
         )
         self.skip = nn.Linear(input_dim, latent_dim)
 
