@@ -9,6 +9,7 @@ def create_derived_features(df):
     
     df = add_motor_hp(df)
     df["air_flow_pressure"] = df["air_inflow"] * df["out_pressure"]
+    df["air_in_temp"] = df["air_inflow"] * df["air_end_temp"]
     df['current_by_airflow'] = df["motor_current"] / df["air_inflow"]
     df['temp_diff'] = df["motor_temp"] - df["air_end_temp"]
     df['current_by_vibration'] = df["motor_current"] * df["motor_vibe"]
