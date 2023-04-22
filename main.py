@@ -51,16 +51,20 @@ dataloader = DatasetLoader(scaled_train_data, scaled_test_data)
 train_loader, test_loader = dataloader.load
 
 # 학습 파라미터
-model = predict_model.SingleAutoEncoder(input_dim=n_features, hidden_dim=512)
+model = predict_model.AutoEncoder(input_dim=n_features, latent_dim=64)
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
-# 학습
-train(train_loader, model, criterion, optimizer)
 
-# 예측
-train_prediction, train_cosine = evaluation(train_loader, model)
-prediction, test_cosine = evaluation(test_loader, model, min(train_cosine))
 
-# 제출
-submission = prediction_to_csv(prediction)
+if __name__ == "__main__":
+    # 학습
+    train(train_loader, model, criterion, optimizer)
+
+    # 예측
+    train_prediction, train_cosine = evaluation(train_loader, model)
+    prediction, test_cosine = evaluation(test_loader, model, min(train_cosine))
+
+    # 제출
+    submission = prediction_to_csv(prediction)
+        

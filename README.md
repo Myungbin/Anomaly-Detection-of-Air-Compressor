@@ -47,7 +47,7 @@ Anomaly-Detection-of-Air-Compressor
 ---
 
 ##  Getting Started <a name = "getting_started"></a>
-`Python 3.9.13` 에서 테스트 되었습니다. 
+`Python 3.9.13` 
 ```
 python -m venv {project name}
 {project name}\Scripts\activate
