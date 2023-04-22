@@ -21,9 +21,6 @@ seed_everything(cfg.SEED)
 scaler = MinMaxScaler()
 
 train_data = pd.read_csv(r'data\raw\train_data.csv')
-# add_train = pd.read_csv(r'data/processed/robust.csv')
-# train_data = pd.concat([train_data, add_train], axis=0)
-# train_data = utils.outlier_z_score_filter_df(train_data, threshold=3)
 train_data = build_features_final.create_derived_features(train_data)
 
 test_data = pd.read_csv(r'data\raw\test_data.csv')
@@ -53,7 +50,6 @@ for group_name, group_data in grouped_train:
     n_features = train_group.shape[1]
     dataloader = DatasetLoader(train_group, test_group)
     train_loader, test_loader = dataloader.load
-    # model = predict_model.SingleAutoEncoder(input_dim=n_features, hidden_dim=256)
     model = predict_model.ResidualConv1DAutoencoder()
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=1e-3)

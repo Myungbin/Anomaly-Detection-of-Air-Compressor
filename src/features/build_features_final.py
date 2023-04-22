@@ -3,10 +3,6 @@ import numpy as np
 import pandas as pd
 
 def create_derived_features(df):
-    """
-    모든 파생 변수를 생성하는 함수
-    """
-    
     df = add_motor_hp(df)
     df["air_flow_pressure"] = df["air_inflow"] * df["out_pressure"]
     df["air_in_temp"] = df["air_inflow"] * df["air_end_temp"]
@@ -22,6 +18,7 @@ def create_derived_features(df):
     df['air_to_power_ratio'] = df['air_inflow'] / (df['motor_current'] * df['motor_vibe']) # 공기 유량 대비 모터 전력
     df['mechanical_efficiency'] = (df['air_flow_pressure'] * df['motor_rpm']) / (df['motor_current'] * df['motor_vibe']) # 기계 효율
     df['out_pressure_squared'] = df['out_pressure'] ** 2
+    
     return df
 
 def add_motor_hp(df):

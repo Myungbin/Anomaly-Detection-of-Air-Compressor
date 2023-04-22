@@ -25,12 +25,8 @@ class AutoEncoder(nn.Module):
             nn.Linear(128, input_dim),
         )
 
-        self.skip = nn.Linear(input_dim, latent_dim)
-
     def forward(self, x):
         encoded = self.Encoder(x)
-        # skip = self.skip(x)
-        # add =  encoded + skip
         decoded = self.Decoder(encoded)
         return decoded
 

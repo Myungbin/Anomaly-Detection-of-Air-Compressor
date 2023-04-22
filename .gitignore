@@ -137,3 +137,6 @@ dmypy.json
 
 # submission csv
 /data/submission/*.*
+
+# EDA
+/notebokks/EdA.ipynb
