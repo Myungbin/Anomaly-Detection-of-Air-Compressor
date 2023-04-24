@@ -15,9 +15,6 @@
 - 신규 데이터로 학습/개선이 가능한 모델이어야 합니다.  
 - 총 8개의 대상 설비를 모델링하면서, 설비별로 별도의 모델을 학습하는 것은 허용되나 모두 동일한 아키텍처를 사용해야 합니다.  
 
-https://aifactory.space/competition/detail/2226
-
-
 ## Project structure
 ```
 Anomaly-Detection-of-Air-Compressor
@@ -135,3 +132,9 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 Normal: 7045  
 Anomaly: 344
 ```
+
+## Host
+- 주최 : 연구개발특구진흥재단  
+- 주관/운영 : 따뜻한메이커연구소 / AIFrenz / AIFrica / AIFactory  
+- 기간 : 4월 3일(월), 10:00 ~ 4월 21일(금), 18:00  
+https://aifactory.space/competition/detail/2226  
