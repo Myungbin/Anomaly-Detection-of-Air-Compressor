@@ -102,8 +102,7 @@ class AutoEncoder(nn.Module):
 ```
 
 ## Train & Inference
-기본적으로 
-추론 단계에서, threshold를 선택할 수 있습니다.  
+추론 단계에서, threshold(cosine similarity, mse, mae)를 선택할 수 있습니다.  
 기본적으로 cosine similarity를  사용하였으며, 추론에 train data의 `cosine similarity의 최솟값`을 사용합니다.  
 만약 MSE, MAE를 사용할때는 tarin threshold의 최댓값을 사용해야 합니다.
 
