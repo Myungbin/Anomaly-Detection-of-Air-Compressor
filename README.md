@@ -7,7 +7,6 @@
 피로도 증가 시 데이터 학습을 통해 산업기기 이상 전조증상을 예측하여 기기 고장을 예방하고 그로 인한 사고를 예방하는 모델을 개발하는 것이 이번 대회의 목표입니다.  
 https://aifactory.space/competition/detail/2226
 
----
 
 ## Project structure
 ```
@@ -45,7 +44,6 @@ Anomaly-Detection-of-Air-Compressor
 ├─ README.md
 └─ validation.py
 ```
----
 
 ##  Getting Started <a name = "getting_started"></a>
 `Python 3.9.13` 
@@ -78,7 +76,6 @@ type: 설비 번호
 설비 번호 3: 50HP
 ```
 
-
 ## Model 
 프로젝트에서는 Autoencder 기반 모델을 사용하여 이상탐지를 하였습니다.  
 기본적으로 모델은 다음과 같은 구조를 따릅니다.  
@@ -105,8 +102,6 @@ class AutoEncoder(nn.Module):
 추론 단계에서, threshold(cosine similarity, mse, mae)를 선택할 수 있습니다.  
 기본적으로 cosine similarity를  사용하였으며, 추론에 train data의 `cosine similarity의 최솟값`을 사용합니다.  
 만약 MSE, MAE를 사용할때는 tarin threshold의 최댓값을 사용해야 합니다.
-
-
 ```python
 train_prediction, train_cosine = evaluation(train_loader, model)
 prediction, test_cosine = evaluation(test_loader, model, min(train_cosine))
@@ -123,7 +118,6 @@ GAMMA = 0.7
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 ```
-
 
 ## Result
 다음의 정상 / 이상치 개수가 재현되어야 합니다.  
